@@ -65,7 +65,7 @@ const ListOrder = () => {
                 <td>{order.total}</td>
                 <td>{order.status}</td>
                 <td className={styles.action}>
-                  <Link to={`/prders/${order.id}`}>
+                  <Link to={`/orders/${order.id}`}>
                     <Button>Detail</Button>
                   </Link>
                   {order.status === "PROCESSING" && (
