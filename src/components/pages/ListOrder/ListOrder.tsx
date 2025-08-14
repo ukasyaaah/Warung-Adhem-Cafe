@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getOrders, updateOrder } from "../../../services/order.service";
 import styles from "./ListOrder.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../ui/Button";
 import type { IOrder } from "../../../types/order";
+import { removeLocalStorage } from "../../../utils/storage";
 
 const ListOrder = () => {
   const [orders, setOrders] = useState([]);
@@ -26,6 +27,12 @@ const ListOrder = () => {
     });
   };
 
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    removeLocalStorage("auth");
+    return navigate("/login");
+  };
+
   return (
     <main className={styles.order}>
       <section className={styles.header}>
@@ -35,7 +42,9 @@ const ListOrder = () => {
             <Button>Create Order</Button>
           </Link>
           <Link to={"/create"}>
-            <Button color="secondary">Logout</Button>
+            <Button color="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
           </Link>
         </div>
       </section>

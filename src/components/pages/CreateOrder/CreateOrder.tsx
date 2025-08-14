@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { ICart, IMenu } from "../../../types/order";
 import { getMenus } from "../../../services/menu.service";
 import styles from "./CreateOrder.module.css";
@@ -7,6 +7,7 @@ import { filters, tables } from "./CreateOrder.constants";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import Select from "../../ui/Select";
+import { createOrder } from "../../../services/order.service";
 
 const CreateOrder = () => {
   const [menus, setMenus] = useState([]);
@@ -22,28 +23,45 @@ const CreateOrder = () => {
   }, [searchParams.get("category")]);
 
   const handleAddToCart = (type: string, id: string, name: string) => {
-    const itemIsInCart = carts.find((item: ICart) => item.id === id);
+    const itemIsInCart = carts.find((item: ICart) => item.menuId === id);
     if (type === "increment") {
       if (itemIsInCart) {
         setCarts(
           carts.map((item: ICart) =>
-            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+            item.menuId === id ? { ...item, quantity: item.quantity + 1 } : item
           )
         );
       } else {
-        setCarts([...carts, { id, name, quantity: 1 }]);
+        setCarts([...carts, { menuId: id, name, quantity: 1 }]);
       }
     } else {
       if (itemIsInCart && itemIsInCart.quantity <= 1) {
-        setCarts(carts.filter((item: ICart) => item.id !== id));
+        setCarts(carts.filter((item: ICart) => item.menuId !== id));
       } else {
         setCarts(
           carts.map((item: ICart) =>
-            item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+            item.menuId === id ? { ...item, quantity: item.quantity - 1 } : item
           )
         );
       }
     }
+  };
+
+  const navigate = useNavigate();
+  const handleOrder = async (event: FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const payload = {
+      customerName: form.customerName.value,
+      tableNumber: form.tableNumber.value,
+      cart: carts.map((item: ICart) => ({
+        menuItemId: item.menuId,
+        quantity: item.quantity,
+        notes: "",
+      })),
+    };
+    await createOrder(payload);
+    return navigate("/orders");
   };
 
   return (
@@ -92,7 +110,7 @@ const CreateOrder = () => {
           ))}
         </div>
       </div>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleOrder}>
         <div>
           <div className={styles.header}>
             <h2 className={styles.title}>Customer Information</h2>
@@ -126,14 +144,15 @@ const CreateOrder = () => {
           {carts.length > 0 ? (
             <div className={styles.cart}>
               {carts.map((item: ICart) => (
-                <div className={styles.item} key={item.id}>
+                <div className={styles.item} key={item.menuId}>
                   <h4 className={styles.name}>{item.name} </h4>
                   <div className={styles.quantity}>
                     <Button
+                      type="button"
                       onClick={() =>
                         handleAddToCart(
                           "decrement",
-                          `${item.id}`,
+                          `${item.menuId}`,
                           `${item.name}`
                         )
                       }
@@ -143,10 +162,11 @@ const CreateOrder = () => {
                     </Button>
                     <div className={styles.number}>{item.quantity} </div>
                     <Button
+                      type="button"
                       onClick={() =>
                         handleAddToCart(
                           "increment",
-                          `${item.id}`,
+                          `${item.menuId}`,
                           `${item.name}`
                         )
                       }

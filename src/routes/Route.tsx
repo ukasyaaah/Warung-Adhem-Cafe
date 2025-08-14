@@ -38,7 +38,7 @@ const routes: RouteObject[] = [
     ),
   },
 
-    {
+  {
     path: "/create",
     element: (
       <ProtectedRoute>
