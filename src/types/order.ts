@@ -13,7 +13,7 @@ interface ICart {
   menuId?: string;
   menuItem?: IMenu;
   quantity: number;
-  notes: string;
+  notes?: string;
   name?: string;
 }
 

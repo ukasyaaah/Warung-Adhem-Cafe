@@ -3,7 +3,7 @@ import { fetchAPI } from "../utils/fetch";
 import { getLocalStorage } from "../utils/storage";
 
 export const getOrders = async () => {
-  const url = `${environment.API_URL}/orders?page=1&pageSize=10`;
+  const url = `${environment.API_URL}/orders?page=1&pageSize=50`;
 
   const result = await fetchAPI(url, {
     method: "GET",

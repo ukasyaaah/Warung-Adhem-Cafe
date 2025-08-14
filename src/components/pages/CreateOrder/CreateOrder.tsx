@@ -20,6 +20,32 @@ const CreateOrder = () => {
     };
     fetchOrder();
   }, [searchParams.get("category")]);
+
+  const handleAddToCart = (type: string, id: string, name: string) => {
+    const itemIsInCart = carts.find((item: ICart) => item.id === id);
+    if (type === "increment") {
+      if (itemIsInCart) {
+        setCarts(
+          carts.map((item: ICart) =>
+            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        );
+      } else {
+        setCarts([...carts, { id, name, quantity: 1 }]);
+      }
+    } else {
+      if (itemIsInCart && itemIsInCart.quantity <= 1) {
+        setCarts(carts.filter((item: ICart) => item.id !== id));
+      } else {
+        setCarts(
+          carts.map((item: ICart) =>
+            item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+          )
+        );
+      }
+    }
+  };
+
   return (
     <main className={styles.create}>
       <div className={styles.menu}>
@@ -54,7 +80,13 @@ const CreateOrder = () => {
               <h2>{item.name} </h2>
               <div className={styles.bottom}>
                 <p className={styles.price}>${item.price}</p>
-                <Button onClick={() => {}}>Order</Button>
+                <Button
+                  onClick={() =>
+                    handleAddToCart("increment", `${item.id}`, `${item.name}`)
+                  }
+                >
+                  Add to Cart
+                </Button>
               </div>
             </div>
           ))}
@@ -97,11 +129,29 @@ const CreateOrder = () => {
                 <div className={styles.item} key={item.id}>
                   <h4 className={styles.name}>{item.name} </h4>
                   <div className={styles.quantity}>
-                    <Button onClick={() => {}} color="secondary">
+                    <Button
+                      onClick={() =>
+                        handleAddToCart(
+                          "decrement",
+                          `${item.id}`,
+                          `${item.name}`
+                        )
+                      }
+                      color="secondary"
+                    >
                       -
                     </Button>
                     <div className={styles.number}>{item.quantity} </div>
-                    <Button onClick={() => {}} color="secondary">
+                    <Button
+                      onClick={() =>
+                        handleAddToCart(
+                          "increment",
+                          `${item.id}`,
+                          `${item.name}`
+                        )
+                      }
+                      color="secondary"
+                    >
                       +
                     </Button>
                   </div>
