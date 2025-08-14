@@ -85,6 +85,36 @@ const CreateOrder = () => {
             />
           </div>
         </div>
+
+        <div>
+          <div className={styles.header}>
+            <h2 className={styles.title}>Current Order</h2>
+          </div>
+
+          {carts.length > 0 ? (
+            <div className={styles.cart}>
+              {carts.map((item: ICart) => (
+                <div className={styles.item} key={item.id}>
+                  <h4 className={styles.name}>{item.name} </h4>
+                  <div className={styles.quantity}>
+                    <Button onClick={() => {}} color="secondary">
+                      -
+                    </Button>
+                    <div className={styles.number}>{item.quantity} </div>
+                    <Button onClick={() => {}} color="secondary">
+                      +
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button type="submit">Order</Button>
+            </div>
+          ) : (
+            <div className={styles.cart}>
+              <h4>Cart is empty</h4>
+            </div>
+          )}
+        </div>
       </form>
     </main>
   );

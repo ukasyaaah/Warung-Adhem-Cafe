@@ -1,4 +1,4 @@
-import styles from "./Input.module.css";
+import styles from "./Select.module.css";
 interface Option {
   value: string;
   label: string;
