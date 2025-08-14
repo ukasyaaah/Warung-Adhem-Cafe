@@ -9,7 +9,8 @@ interface IMenu {
 }
 
 interface ICart {
-  menuId: string;
+  id?: string;
+  menuId?: string;
   menuItem?: IMenu;
   quantity: number;
   notes: string;
@@ -24,4 +25,4 @@ interface IOrder {
   total: number;
 }
 
-export type { IOrder, ICart };
+export type { IOrder, ICart, IMenu };

@@ -17,7 +17,7 @@ const DetailOrder = () => {
     };
 
     fetchOrder();
-  }, []);
+  });
 
   return (
     <main className={styles.detail}>
